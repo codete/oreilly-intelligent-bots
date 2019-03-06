@@ -58,5 +58,7 @@ RUN python3 -m spacy download en
 RUN python3 -m nltk.downloader all
 WORKDIR /home/codete/
 RUN mkdir /home/codete/workshop/
+WORKDIR /home/codete/workshop/
+RUN git clone https://github.com/codete/oreilly-intelligent-bots
 
 CMD jupyter-notebook --ip=0.0.0.0 --no-browser --notebook-dir=/home/codete/workshop/
