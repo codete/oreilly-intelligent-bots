@@ -1,64 +1,58 @@
-FROM debian:stretch-slim
+FROM ubuntu:18.04
+
+ENV TZ=Europe/Warsaw
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
 
 RUN apt update && apt install -y \
-  jupyter-core \
-  jupyter-notebook \
-  python3-matplotlib \
-  python3-numpy \
-  python3-pandas \
+  openjdk-8-jdk \
   python3-pip \
-  python3-requests \
-  python3-scipy \
-  python3-seaborn \
-  python-pip \
+  python3-tk \
+  wget \
   vim \
-  git \
-  ffmpeg
+  git
+
+
+RUN pip3 install --upgrade pip
 
 RUN pip3 install \
-  py-trello \
-  rasa_nlu \
+  numpy \
+  jupyter \
+  requests \
   sklearn_crfsuite \
-  slackclient \
   spacy\
-  gtts\
-  pysqlite3 \
-  matplotlib \
-  jellyfish \
   requests \
   pandas \
   sklearn \
-  avs_client \
-  cherrypy\
-  pydub\
-  six \
-  py4j \
-  nltk \
-  rasa_core \
-  gensim \
-  slackclient \
+  rasa \
   tensorflow \
-  tensorlayer \
   keras \
-  textblob \
-  stanfordcorenlp \
-  dill \
-  ftfy \
-  scipy \
-  slackeventsapi \
+  flask \
   pymessenger \
-  flask
+  slackeventsapi \
+  webexteamssdk \
+  nltk \
+  gensim \
+  matplotlib \
+  pickle-mixin \
+  jellyfish \
+  textblob \
+  nest_asyncio \
+  skype-chatbot
+
+RUN pip3 install rasa-x -i https://pypi.rasa.com/simple
 
 EXPOSE 8888
 EXPOSE 9000
 EXPOSE 5000
-EXPOSE 5050
 
 RUN python3 -m spacy download en
-RUN python3 -m nltk.downloader all
+RUN useradd -ms /bin/bash codete
+RUN adduser codete sudo
+
+USER codete
 WORKDIR /home/codete/
+RUN python3 -m nltk.downloader all
 RUN mkdir /home/codete/workshop/
 WORKDIR /home/codete/workshop/
 RUN git clone https://github.com/codete/oreilly-intelligent-bots
-
-CMD jupyter-notebook --ip=0.0.0.0 --no-browser --notebook-dir=/home/codete/workshop/
+CMD jupyter-notebook --ip=0.0.0.0 --NotebookApp.token='' --NotebookApp.password='' --no-browser --notebook-dir=/home/codete/workshop/
